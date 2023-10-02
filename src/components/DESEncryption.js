@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Input, Upload, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { stringToBinary, binaryToString } from '../utils/binary';
+import { initialPermutation, inverseInitialPermutation } from '../utils/initialPermutation';
 
 function DESEncryption() {
     const [key, setKey] = useState("");       // To store the key
@@ -18,7 +19,7 @@ function DESEncryption() {
         reader.onload = () => {
             setText(reader.result);
         };
-        reader.onerror = error => console.log(error.target.error.code);  // This will help identify any FileReader errors
+        reader.onerror = error => console.log(error.target.error);  // This will help identify any FileReader errors
 
         if (info.file instanceof Blob) {
             reader.readAsText(info.file);
@@ -28,8 +29,8 @@ function DESEncryption() {
     };
 
     const handleEncryption = () => {
-        const binary = stringToBinary(text);
-        message.info('Implement encryption')
+        message.info('Implement encryption');
+        const binary = initialPermutation(stringToBinary(text));
         setCipherText(binary);
         return binary;
     };
