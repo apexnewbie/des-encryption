@@ -4,6 +4,7 @@ import { UploadOutlined } from '@ant-design/icons';
 import { stringToBinary, binaryToString } from '../utils/binary';
 import { initialPermutation, inverseInitialPermutation } from '../utils/initialPermutation';
 import { pkcs5Pad, pkcs5Unpad, splitIntoBlocks, splitBinaryIntoBlocks } from '../utils/textProcess';
+import generateSubkeys from '../utils/keyGeneration';
 
 function DESEncryption() {
     const [key, setKey] = useState("");       // To store the key
@@ -41,6 +42,7 @@ function DESEncryption() {
         //     processedBinary += inverseInitialPermutation(block);
         // }
         // setCipherText(pkcs5Unpad(binaryToString(processedBinary)));
+        // setCipherText(processedBinary)
 
         return binary;
     };
@@ -58,9 +60,17 @@ function DESEncryption() {
         // 4. Join all the binary blocks together
         const binaryIp = encryptedBlocks.join('');
 
+        // 5. Generate subkeys
+        const subkeys = generateKeys(key);
+        console.log(subkeys);
+
         return binaryIp;
     }
 
+    const generateKeys = (key) => {
+        const subkeys = generateSubkeys(key);
+        return subkeys;
+    }
 
     return (
         <div>
