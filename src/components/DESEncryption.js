@@ -3,6 +3,7 @@ import { Button, Input, Upload, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { stringToBinary, binaryToString } from '../utils/binary';
 import { initialPermutation, inverseInitialPermutation } from '../utils/initialPermutation';
+import { pkcs5Pad, pkcs5Unpad, splitIntoBlocks, splitBinaryIntoBlocks } from '../utils/textProcess';
 
 function DESEncryption() {
     const [key, setKey] = useState("");       // To store the key
@@ -30,10 +31,36 @@ function DESEncryption() {
 
     const handleEncryption = () => {
         message.info('Implement encryption');
-        const binary = initialPermutation(stringToBinary(text));
-        setCipherText(binary);
+
+        const binary = encryption(text, key);
+
+        // Binary InitialPermutation Test
+        // const blocks = splitBinaryIntoBlocks(binary);
+        // let processedBinary = '';
+        // for (let block of blocks) {
+        //     processedBinary += inverseInitialPermutation(block);
+        // }
+        // setCipherText(pkcs5Unpad(binaryToString(processedBinary)));
+
         return binary;
     };
+
+    const encryption = (text, key) => {
+        // 1. Add Padding
+        const paddedText = pkcs5Pad(text);
+        // 2. Split Text into Blocks
+        const blocks = splitIntoBlocks(paddedText);
+        // 3. Convert each block to binary
+        const encryptedBlocks = blocks.map(block => {
+            const binary = initialPermutation(stringToBinary(block));
+            return binary;
+        });
+        // 4. Join all the binary blocks together
+        const binaryIp = encryptedBlocks.join('');
+
+        return binaryIp;
+    }
+
 
     return (
         <div>
