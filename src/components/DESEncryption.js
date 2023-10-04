@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Button, Input, Upload, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { stringToBinary, binaryToString } from '../utils/binary';
+import { stringToBinary, binaryToString, binaryToBase64 } from '../utils/binary';
 import { initialPermutation, inverseInitialPermutation } from '../utils/initialPermutation';
 import { pkcs5Pad, pkcs5Unpad, splitIntoBlocks, splitBinaryIntoBlocks } from '../utils/textProcess';
 import generateSubkeys from '../utils/keyGeneration';
+import { sixteenRounds } from '../utils/loops';
 
 function DESEncryption() {
     const [key, setKey] = useState("");       // To store the key
@@ -33,7 +34,7 @@ function DESEncryption() {
     const handleEncryption = () => {
         message.info('Implement encryption');
 
-        const binary = encryption(text, key);
+        const cipherBinary = encryption(text, key);
 
         // Binary InitialPermutation Test
         // const blocks = splitBinaryIntoBlocks(binary);
@@ -43,8 +44,9 @@ function DESEncryption() {
         // }
         // setCipherText(pkcs5Unpad(binaryToString(processedBinary)));
         // setCipherText(processedBinary)
+        setCipherText(binaryToBase64(cipherBinary));
 
-        return binary;
+        return cipherBinary;
     };
 
     const encryption = (text, key) => {
@@ -52,19 +54,20 @@ function DESEncryption() {
         const paddedText = pkcs5Pad(text);
         // 2. Split Text into Blocks
         const blocks = splitIntoBlocks(paddedText);
+
+        const subKeys = generateKeys(key);
+        console.log(subKeys);
+
         // 3. Convert each block to binary
         const encryptedBlocks = blocks.map(block => {
             const binary = initialPermutation(stringToBinary(block));
-            return binary;
+            const afterRounds = sixteenRounds(binary, subKeys);
+            return inverseInitialPermutation(afterRounds);
         });
         // 4. Join all the binary blocks together
-        const binaryIp = encryptedBlocks.join('');
+        const cipherBinary = encryptedBlocks.join('');
 
-        // 5. Generate subkeys
-        const subkeys = generateKeys(key);
-        console.log(subkeys);
-
-        return binaryIp;
+        return cipherBinary;
     }
 
     const generateKeys = (key) => {

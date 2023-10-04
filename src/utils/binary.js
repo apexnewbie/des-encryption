@@ -14,3 +14,14 @@ export function binaryToString(binary) {
     });
     return chars.join(''); // Join the characters together
 }
+
+export function binaryToBase64(binary) {
+    // Split the binary string into bytes of 8
+    const bytes = binary.match(/.{1,8}/g).map(byte => parseInt(byte, 2));
+
+    // Convert bytes to characters
+    const chars = bytes.map(byte => String.fromCharCode(byte)).join('');
+
+    // Encode to Base64
+    return btoa(chars);
+}
