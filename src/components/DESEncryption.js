@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Input, Upload, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { stringToBinary, binaryToString, binaryToBase64 } from '../utils/binary';
+import { stringToBinary, binaryToString, binaryToBase64, base64ToBinary } from '../utils/binary';
 import { initialPermutation, inverseInitialPermutation } from '../utils/initialPermutation';
 import { pkcs5Pad, pkcs5Unpad, splitIntoBlocks, splitBinaryIntoBlocks } from '../utils/textProcess';
 import generateSubkeys from '../utils/keyGeneration';
@@ -37,13 +37,6 @@ function DESEncryption() {
         const cipherBinary = encryption(text, key);
 
         // Binary InitialPermutation Test
-        // const blocks = splitBinaryIntoBlocks(binary);
-        // let processedBinary = '';
-        // for (let block of blocks) {
-        //     processedBinary += inverseInitialPermutation(block);
-        // }
-        // setCipherText(pkcs5Unpad(binaryToString(processedBinary)));
-        // setCipherText(processedBinary)
         setCipherText(binaryToBase64(cipherBinary));
 
         return cipherBinary;
@@ -56,7 +49,7 @@ function DESEncryption() {
         const blocks = splitIntoBlocks(paddedText);
 
         const subKeys = generateKeys(key);
-        console.log(subKeys);
+        // console.log(subKeys);
 
         // 3. Convert each block to binary
         const encryptedBlocks = blocks.map(block => {
@@ -69,6 +62,36 @@ function DESEncryption() {
 
         return cipherBinary;
     }
+
+    const handleDecryption = () => {
+        message.info('Implement decryption');
+        const plainText = decryption(text, key);
+        setCipherText(plainText);
+    };
+    
+
+    const decryption = (cipherText, key) => {
+        const binaryText = base64ToBinary(cipherText);
+        // 1. Split the cipherText into blocks
+        const blocks = splitBinaryIntoBlocks(binaryText);
+
+        const subKeys = generateSubkeys(key).reverse();  // The subkeys need to be used in reverse order for decryption
+
+        // 2. Convert each block to binary and decrypt
+        const decryptedBlocks = blocks.map(block => {
+            const binary = initialPermutation(block);
+            const afterRounds = sixteenRounds(binary, subKeys);
+            return inverseInitialPermutation(afterRounds);
+        });
+
+        // 3. Join all the binary blocks together and convert to string
+        const plainBinary = decryptedBlocks.join('');
+        const paddedPlainText = binaryToString(plainBinary);
+        const plainText = pkcs5Unpad(paddedPlainText);
+
+        return plainText;
+    };
+
 
     const generateKeys = (key) => {
         const subkeys = generateSubkeys(key);
@@ -109,7 +132,7 @@ function DESEncryption() {
             <Button type='primary' onClick={handleEncryption} style={{ marginRight: 20 }}>
                 Encrypt
             </Button>
-            <Button type='primary' onClick={() => message.info('Implement decryption')}>
+            <Button type='primary' onClick={handleDecryption} style={{ marginRight: 20 }}>
                 Decrypt
             </Button>
         </div>

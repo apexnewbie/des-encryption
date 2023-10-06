@@ -25,3 +25,16 @@ export function binaryToBase64(binary) {
     // Encode to Base64
     return btoa(chars);
 }
+
+export function base64ToBinary(base64) {
+    // Decode from Base64 to get the characters
+    const chars = atob(base64);
+
+    // Convert characters to byte values
+    const bytes = chars.split('').map(char => char.charCodeAt(0));
+
+    // Convert byte values to binary strings, ensuring they're 8 bits long
+    const binary = bytes.map(byte => byte.toString(2).padStart(8, '0')).join('');
+
+    return binary;
+}
