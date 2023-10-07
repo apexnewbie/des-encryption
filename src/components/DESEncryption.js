@@ -33,8 +33,8 @@ function DESEncryption() {
 
     const handleEncryption = () => {
         message.info('Implement encryption');
-
-        const cipherBinary = encryption(text, key);
+        const binaryKey = stringToBinary(key);
+        const cipherBinary = encryption(text, binaryKey);
 
         // Binary InitialPermutation Test
         setCipherText(binaryToBase64(cipherBinary));
@@ -65,7 +65,8 @@ function DESEncryption() {
 
     const handleDecryption = () => {
         message.info('Implement decryption');
-        const plainText = decryption(text, key);
+        const binaryKey = stringToBinary(key);
+        const plainText = decryption(text, binaryKey);
         setCipherText(plainText);
     };
     

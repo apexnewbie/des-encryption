@@ -34,7 +34,24 @@ const shiftLeft = (key, shifts) => {
     return key.slice(shifts).concat(key.slice(0, shifts));
 };
 
+const adjustKeyLength = (key) => {
+    if (key.length === 64) return key;
+    
+    if (key.length < 64) {
+        // Padding with zeros to make the key 64 bits long
+        return key.padEnd(64, '0');
+    }
+
+    if (key.length > 64) {
+        // Truncate the key to 64 bits
+        return key.slice(0, 64);
+    }
+}
+
 const generateSubkeys = (key) => {
+
+    key = adjustKeyLength(key);
+
     const initial = applyPC1(key);
     let left = initial.slice(0, 28);
     let right = initial.slice(28, 56);
