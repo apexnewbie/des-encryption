@@ -45,15 +45,16 @@ function DESEncryption() {
     const encryption = (text, key) => {
         // 1. Add Padding
         const paddedText = pkcs5Pad(text);
-        // 2. Split Text into Blocks
-        const blocks = splitIntoBlocks(paddedText);
+        // 2. Split binary into Blocks
+        const binaryText = stringToBinary(paddedText);
+        const blocks = splitBinaryIntoBlocks(binaryText);
 
         const subKeys = generateKeys(key);
         // console.log(subKeys);
 
         // 3. Convert each block to binary
         const encryptedBlocks = blocks.map(block => {
-            const binary = initialPermutation(stringToBinary(block));
+            const binary = initialPermutation(block);
             const afterRounds = sixteenRounds(binary, subKeys);
             return inverseInitialPermutation(afterRounds);
         });
@@ -69,7 +70,6 @@ function DESEncryption() {
         const plainText = decryption(text, binaryKey);
         setCipherText(plainText);
     };
-    
 
     const decryption = (cipherText, key) => {
         const binaryText = base64ToBinary(cipherText);

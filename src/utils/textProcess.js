@@ -1,5 +1,5 @@
 export function splitIntoBlocks(text) {
-    const blockSize = 8; // 8字节
+    const blockSize = 8; // 64 bits
     const blocks = [];
 
     for (let i = 0; i < text.length; i += blockSize) {
@@ -22,13 +22,28 @@ export function splitBinaryIntoBlocks(binaryStr) {
 
 
 export function pkcs5Pad(data) {
+    // const blockSize = 8;  // for DES
+    // const padLength = blockSize - (data.length % blockSize);
+    // const pad = new Array(padLength).fill(padLength).map(e => String.fromCharCode(e)).join('');
+    // return data + pad;
     const blockSize = 8;  // for DES
-    const padLength = blockSize - (data.length % blockSize);
-    const pad = new Array(padLength).fill(padLength).map(e => String.fromCharCode(e)).join('');
-    return data + pad;
+    const encoder = new TextEncoder();
+    const byteArray = encoder.encode(data);
+    const padLength = blockSize - (byteArray.length % blockSize);
+    const paddedByteArray = new Uint8Array(byteArray.length + padLength);
+    paddedByteArray.set(byteArray);
+    paddedByteArray.fill(padLength, byteArray.length);
+    const decoder = new TextDecoder();
+    return decoder.decode(paddedByteArray);
 }
 
 export function pkcs5Unpad(paddedData) {
-    const lastByte = paddedData.charCodeAt(paddedData.length - 1);
-    return paddedData.slice(0, paddedData.length - lastByte);
+    // const lastByte = paddedData.charCodeAt(paddedData.length - 1);
+    // return paddedData.slice(0, paddedData.length - lastByte);
+    const encoder = new TextEncoder();
+    const byteArray = encoder.encode(paddedData);
+    const lastByte = byteArray[byteArray.length - 1];
+    const unpaddedByteArray = byteArray.slice(0, byteArray.length - lastByte);
+    const decoder = new TextDecoder();
+    return decoder.decode(unpaddedByteArray);
 }
