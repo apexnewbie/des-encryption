@@ -101,11 +101,11 @@ function DESEncryption() {
 
     return (
         <div>
-            <h1>DES Encryption & Decryption Tool</h1>
-
+            {/* <h1>DES Encryption & Decryption Tool</h1> */}
             <Input
                 placeholder="Enter key"
                 value={key}
+                allowClear
                 onChange={e => setKey(e.target.value)}
                 style={{ marginBottom: 20 }}
             />
@@ -115,6 +115,7 @@ function DESEncryption() {
                 value={text}
                 onChange={e => setText(e.target.value)}
                 rows={4}
+                allowClear
                 style={{ marginTop: 20, marginBottom: 20 }}
             />
 
@@ -126,6 +127,7 @@ function DESEncryption() {
                 placeholder="Encrypted text will appear here..."
                 value={cipherText}
                 rows={4}
+                allowClear
                 onChange={e => setCipherText(e.target.value)}
                 style={{ marginTop: 20, marginBottom: 20 }}
             />
