@@ -1,3 +1,4 @@
+// Define the PC1 table for key generation
 const PC1 = [
     57, 49, 41, 33, 25, 17, 9,
     1, 58, 50, 42, 34, 26, 18,
@@ -9,8 +10,10 @@ const PC1 = [
     21, 13, 5, 28, 20, 12, 4
 ];
 
+// Define the number of shifts for each round of key generation
 const keyShifts = [1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1];
 
+// Define the PC2 table for key generation
 const PC2 = [
     14, 17, 11, 24, 1, 5,
     3, 28, 15, 6, 21, 10,
@@ -34,6 +37,7 @@ const shiftLeft = (key, shifts) => {
     return key.slice(shifts).concat(key.slice(0, shifts));
 };
 
+// Function to adjust the key length to 64 bits
 const adjustKeyLength = (key) => {
     if (key.length === 64) return key;
     
@@ -48,16 +52,20 @@ const adjustKeyLength = (key) => {
     }
 }
 
+// Function to generate 16 subKeys from the initial key
 const generateSubkeys = (key) => {
 
     key = adjustKeyLength(key);
 
     const initial = applyPC1(key);
+
+    // Split the key into left and right halves
     let left = initial.slice(0, 28);
     let right = initial.slice(28, 56);
 
     const subkeys = [];
 
+    // Generate 16 subkeys through shifts and PC2 permutation
     for (let i = 0; i < 16; i++) {
         left = shiftLeft(left, keyShifts[i]);
         right = shiftLeft(right, keyShifts[i]);

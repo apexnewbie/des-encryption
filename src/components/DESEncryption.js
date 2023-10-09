@@ -3,7 +3,7 @@ import { Button, Input, Upload, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { stringToBinary, binaryToString, binaryToBase64, base64ToBinary } from '../utils/binary';
 import { initialPermutation, inverseInitialPermutation } from '../utils/initialPermutation';
-import { pkcs5Pad, pkcs5Unpad, splitIntoBlocks, splitBinaryIntoBlocks } from '../utils/textProcess';
+import { pkcs5Pad, pkcs5Unpad, splitBinaryIntoBlocks } from '../utils/textProcess';
 import generateSubkeys from '../utils/keyGeneration';
 import { sixteenRounds } from '../utils/loops';
 
@@ -40,13 +40,12 @@ function DESEncryption() {
     };
 
 
-
+    // Handle the encryption process
     const handleEncryption = () => {
         try {
             const binaryKey = stringToBinary(key);
             const cipherBinary = encryption(text, binaryKey);
 
-            // Binary InitialPermutation Test
             setCipherText(binaryToBase64(cipherBinary));
             message.info('Implement Encryption');
         } catch (error) {
@@ -54,28 +53,30 @@ function DESEncryption() {
         }
     };
 
+    // Perform the encryption
     const encryption = (text, key) => {
-        // 1. Add Padding
+        // Add Padding
         const paddedText = pkcs5Pad(text);
-        // 2. Split binary into Blocks
+        // Convert to binary
         const binaryText = stringToBinary(paddedText);
+        // Split binary into Blocks
         const blocks = splitBinaryIntoBlocks(binaryText);
 
         const subKeys = generateKeys(key);
-        // console.log(subKeys);
 
-        // 3. Convert each block to binary
+        // Encrypt each block
         const encryptedBlocks = blocks.map(block => {
             const binary = initialPermutation(block);
             const afterRounds = sixteenRounds(binary, subKeys);
             return inverseInitialPermutation(afterRounds);
         });
-        // 4. Join all the binary blocks together
+        // Join all the binary blocks together
         const cipherBinary = encryptedBlocks.join('');
 
         return cipherBinary;
     }
 
+    // Handle the decryption process
     const handleDecryption = () => {
         if (text.length === 0) {
             message.warning('Please enter ciphertext to decrypt');
@@ -92,21 +93,22 @@ function DESEncryption() {
         }
     };
 
+    // Perform the decryption
     const decryption = (cipherText, key) => {
         const binaryText = base64ToBinary(cipherText);
-        // 1. Split the cipherText into blocks
+        // Split the cipherText into blocks
         const blocks = splitBinaryIntoBlocks(binaryText);
 
-        const subKeys = generateSubkeys(key).reverse();  // The subkeys need to be used in reverse order for decryption
+        const subKeys = generateSubkeys(key).reverse();  // The subKeys need to be used in reverse order for decryption
 
-        // 2. Convert each block to binary and decrypt
+        // Decrypt each block
         const decryptedBlocks = blocks.map(block => {
             const binary = initialPermutation(block);
             const afterRounds = sixteenRounds(binary, subKeys);
             return inverseInitialPermutation(afterRounds);
         });
 
-        // 3. Join all the binary blocks together and convert to string
+        // Join all the binary blocks together
         const plainBinary = decryptedBlocks.join('');
         const paddedPlainText = binaryToString(plainBinary);
         const plainText = pkcs5Unpad(paddedPlainText);
@@ -115,6 +117,7 @@ function DESEncryption() {
     };
 
 
+    // Generate the subKeys from the provided key
     const generateKeys = (key) => {
         const subkeys = generateSubkeys(key);
         return subkeys;
@@ -122,7 +125,6 @@ function DESEncryption() {
 
     return (
         <div>
-            {/* <h1>DES Encryption & Decryption Tool</h1> */}
             <Input
                 placeholder="Enter key"
                 value={key}

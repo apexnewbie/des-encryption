@@ -1,3 +1,4 @@
+// Split text into blocks
 export function splitIntoBlocks(text) {
     const blockSize = 8; // 64 bits
     const blocks = [];
@@ -9,6 +10,7 @@ export function splitIntoBlocks(text) {
     return blocks;
 };
 
+// Split a binary string into blocks
 export function splitBinaryIntoBlocks(binaryStr) {
     const blockSize = 64;  // 64 bits
     const blocks = [];
@@ -20,12 +22,8 @@ export function splitBinaryIntoBlocks(binaryStr) {
     return blocks;
 };
 
-
+// Pad data using PKCS5 padding for DES encryption
 export function pkcs5Pad(data) {
-    // const blockSize = 8;  // for DES
-    // const padLength = blockSize - (data.length % blockSize);
-    // const pad = new Array(padLength).fill(padLength).map(e => String.fromCharCode(e)).join('');
-    // return data + pad;
     const blockSize = 8;  // for DES
     const encoder = new TextEncoder();
     const byteArray = encoder.encode(data);
@@ -37,9 +35,8 @@ export function pkcs5Pad(data) {
     return decoder.decode(paddedByteArray);
 }
 
+// Unpad PKCS5 padded data
 export function pkcs5Unpad(paddedData) {
-    // const lastByte = paddedData.charCodeAt(paddedData.length - 1);
-    // return paddedData.slice(0, paddedData.length - lastByte);
     const encoder = new TextEncoder();
     const byteArray = encoder.encode(paddedData);
     const lastByte = byteArray[byteArray.length - 1];

@@ -1,3 +1,4 @@
+// Initial permutation (IP) table
 const IP = [
     58, 50, 42, 34, 26, 18, 10, 2,
     60, 52, 44, 36, 28, 20, 12, 4,
@@ -29,10 +30,12 @@ function performPermutation(input, table) {
     return output;
 }
 
+// Perform the initial permutation (IP) on plainText
 export function initialPermutation(plainText) {
     return performPermutation(plainText, IP);
 }
 
+// Perform the inverse initial permutation (IP-1) on encryptedText
 export function inverseInitialPermutation(encryptedText) {
     return performPermutation(encryptedText, IP_INV);
 }

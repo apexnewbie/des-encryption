@@ -71,7 +71,7 @@ const S_BOXES = [
     ]
 ];
 
-
+// XOR function for binary strings
 const xor = (binary1, binary2) => {
     let result = '';
     for (let i = 0; i < binary1.length; i++) {
@@ -112,6 +112,7 @@ const pPermutation = (binary32) => {
     return permuted;
 };
 
+// Sixteen rounds of the encryption algorithm
 export const sixteenRounds = (binary, subkeys) => {
     let left = binary.substring(0, 32);
     let right = binary.substring(32, 64);
