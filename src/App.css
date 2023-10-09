@@ -36,3 +36,20 @@
     transform: rotate(360deg);
   }
 }
+
+.layout-container {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+}
+
+.des-encryption-container {
+  padding: 0 50px;
+}
+
+.switch-container {
+  display: flex;
+  justify-content: flex-end; 
+  align-items: center;
+  padding: 10px 50px;
+}

@@ -14,32 +14,44 @@ function DESEncryption() {
 
     // File upload handler
     const handleFileUpload = (info) => {
-        if (info.file.status === 'done' || info.file.status === 'error') {
-            return; // Do nothing if upload status is 'done' or 'error'
-        }
+        try {
+            if (info.file.status === 'done' || info.file.status === 'error') {
+                return; // Do nothing if upload status is 'done' or 'error'
+            }
 
-        const reader = new FileReader();
-        reader.onload = () => {
-            setText(reader.result);
-        };
-        reader.onerror = error => console.log(error.target.error);  // This will help identify any FileReader errors
+            const reader = new FileReader();
+            reader.onload = () => {
+                setText(reader.result);
+            };
 
-        if (info.file instanceof Blob) {
+            reader.onerror = error => {
+                throw new Error(error.target.error);
+            };
+
+            if (!(info.file instanceof Blob)) {
+                throw new Error("Couldn't find the origin file object.");
+            }
+
             reader.readAsText(info.file);
-        } else {
-            console.error("Couldn't find the origin file object.");
+
+        } catch (e) {
+            message.error("Error in handleFileUpload: ", e);
         }
     };
 
+
+
     const handleEncryption = () => {
-        message.info('Implement encryption');
-        const binaryKey = stringToBinary(key);
-        const cipherBinary = encryption(text, binaryKey);
+        try {
+            const binaryKey = stringToBinary(key);
+            const cipherBinary = encryption(text, binaryKey);
 
-        // Binary InitialPermutation Test
-        setCipherText(binaryToBase64(cipherBinary));
-
-        return cipherBinary;
+            // Binary InitialPermutation Test
+            setCipherText(binaryToBase64(cipherBinary));
+            message.info('Implement Encryption');
+        } catch (error) {
+            message.error(error.message);
+        }
     };
 
     const encryption = (text, key) => {
@@ -65,10 +77,19 @@ function DESEncryption() {
     }
 
     const handleDecryption = () => {
-        message.info('Implement decryption');
-        const binaryKey = stringToBinary(key);
-        const plainText = decryption(text, binaryKey);
-        setCipherText(plainText);
+        if (text.length === 0) {
+            message.warning('Please enter ciphertext to decrypt');
+            return;
+        }
+
+        try {
+            const binaryKey = stringToBinary(key);
+            const plainText = decryption(text, binaryKey);
+            setCipherText(plainText);
+            message.info('Implement Decryption');
+        } catch (error) {
+            message.error(error.message);
+        }
     };
 
     const decryption = (cipherText, key) => {
@@ -111,10 +132,10 @@ function DESEncryption() {
             />
 
             <Input.TextArea
-                placeholder="Enter plaintext here"
+                placeholder="Enter plaintext or ciphertext here"
                 value={text}
                 onChange={e => setText(e.target.value)}
-                rows={4}
+                rows={5}
                 allowClear
                 style={{ marginTop: 20, marginBottom: 20 }}
             />
@@ -124,9 +145,9 @@ function DESEncryption() {
             </Upload>
 
             <Input.TextArea
-                placeholder="Encrypted text will appear here..."
+                placeholder="Ciphertext or plaintext will be displayed here"
                 value={cipherText}
-                rows={4}
+                rows={5}
                 allowClear
                 onChange={e => setCipherText(e.target.value)}
                 style={{ marginTop: 20, marginBottom: 20 }}

@@ -1,11 +1,12 @@
 import './App.css';
 import DESEncryption from './components/DESEncryption';
 import { useState } from 'react';
-import { ConfigProvider, theme, Switch, Layout } from 'antd';
+import { ConfigProvider, theme, Switch, Layout, Typography } from 'antd';
 import { Content, Header, Footer } from 'antd/es/layout/layout';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const Text = Typography.Text;
 
   const handleSwitchChange = (checked) => {
     setIsDarkMode(checked);
@@ -14,20 +15,30 @@ function App() {
   return (
     <ConfigProvider theme={{
       algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
+      token: {
+        colorPrimary: '#722ed1',
+        colorInfo: '#13c2c2',
+      },
       components: {
         Layout: {
           headerColor: 'rgba(255, 255, 255, 0.85)',
         },
       },
     }}>
-      <Layout>
+      <Layout className="layout-container">
         <Header style={{ display: 'flex', alignItems: 'center' }}>
           DES Encryption & Decryption Tool
         </Header>
         <div className="App">
           <Content>
-            <Switch checked={isDarkMode} onChange={handleSwitchChange} />
-            <DESEncryption />
+            <div className='switch-container'>
+              <Text style={{ marginRight: 10 }}>Dark Mode</Text>
+              <Switch checked={isDarkMode} onChange={handleSwitchChange} />
+            </div>
+
+            <div className='des-encryption-container'>
+              <DESEncryption />
+            </div>
           </Content>
         </div>
         <Footer style={{ textAlign: 'center' }}>Produced by Wu Tianyu</Footer>
