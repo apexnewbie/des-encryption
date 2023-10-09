@@ -32,7 +32,7 @@ function App() {
         <div className="App">
           <Content>
             <div className='switch-container'>
-              <Text style={{ marginRight: 10 }}>Dark Mode</Text>
+              <Text style={{ marginRight: 10 }}>Dark Mode 🌒</Text>
               <Switch checked={isDarkMode} onChange={handleSwitchChange} />
             </div>
 
