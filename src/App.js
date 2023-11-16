@@ -1,6 +1,7 @@
 import './App.css';
 import DESEncryption from './components/DESEncryption';
 import RSA from './components/RSA';
+import DES from './components/DES';
 import { useState } from 'react';
 import { ConfigProvider, theme, Switch, Layout, Typography } from 'antd';
 import { Content, Header, Footer } from 'antd/es/layout/layout';
@@ -39,7 +40,8 @@ function App() {
 
             <div className='des-encryption-container'>
               {/* <DESEncryption /> */}
-              <RSA />
+              {/* <RSA /> */}
+              <DES />
             </div>
           </Content>
         </div>
