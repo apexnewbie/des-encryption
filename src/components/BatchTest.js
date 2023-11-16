@@ -4,18 +4,18 @@ import { Button, Table } from 'antd';
 function BatchTest({ key, encryptFunction, decryptFunction }) {
     const [testResults, setTestResults] = useState([]);
 
-    // 自动生成测试数据
+    // Generate test data
     const generateTestData = (minLength, maxLength, step) => {
         let testData = [];
         for (let length = minLength; length <= maxLength; length += step) {
-            testData.push(''.padStart(length, 'a')); // 生成指定长度的字符串
+            testData.push(''.padStart(length, 'a')); // Generate a string of length 'length' filled with 'a'
         }
         return testData;
     };
 
-    // 执行测试
+    // Run the tests
     const runTests = () => {
-        const testData = generateTestData(100, 10000, 1000); // 生成测试数据
+        const testData = generateTestData(100, 10000, 1000); // Generate test data
         let results = [];
 
         testData.forEach(text => {
@@ -37,7 +37,7 @@ function BatchTest({ key, encryptFunction, decryptFunction }) {
         setTestResults(results);
     };
 
-    // 渲染测试结果的表格
+    // Table columns
     const columns = [
         {
             title: 'Message Length',

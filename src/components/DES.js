@@ -7,6 +7,7 @@ const { TextArea } = Input;
 const { Text } = Typography;
 
 function DES() {
+    // State variables for the plain text, encrypted text, decrypted text, key, and timings
     const [plainText, setPlainText] = useState('');
     const [encryptedText, setEncryptedText] = useState('');
     const [decryptedText, setDecryptedText] = useState('');
@@ -15,23 +16,26 @@ function DES() {
     const [decryptionTime, setDecryptionTime] = useState(0);
 
 
+    // Function to handle the encryption process
     const handleEncrypt = () => {
         const start = performance.now();
         const encrypted = CryptoJS.DES.encrypt(plainText, key).toString();
-        setEncryptedText(encrypted);
         const end = performance.now();
+        setEncryptedText(encrypted);
         setEncryptionTime(end - start);
     };
 
+    // Function to handle the decryption process
     const handleDecrypt = () => {
         const start = performance.now();
         const decryptedBytes = CryptoJS.DES.decrypt(encryptedText, key);
         const decrypted = decryptedBytes.toString(CryptoJS.enc.Utf8);
-        setDecryptedText(decrypted);
         const end = performance.now();
+        setDecryptedText(decrypted);
         setDecryptionTime(end - start);
     };
 
+    // Helper functions for batch encryption and decryption
     const encryptFunction = (text) => CryptoJS.DES.encrypt(text, key).toString();
     const decryptFunction = (encryptedText) => {
         const decryptedBytes = CryptoJS.DES.decrypt(encryptedText, key);

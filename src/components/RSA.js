@@ -29,13 +29,13 @@ function RSA() {
         const encrypt = new JSEncrypt();
         encrypt.setPublicKey(publicKey);
 
-        const chunks = splitText(plainText, 100); // 假定每块最大100字符
+        const chunks = splitText(plainText, 100); // Assume that each chunk is 100 characters long
         const encryptedChunks = chunks.map(chunk => {
             const encrypted = encrypt.encrypt(chunk);
-            return btoa(encrypted); // 将加密文本转换为Base64编码
+            return btoa(encrypted); // Convert the encrypted text to Base64
         });
-        setEncryptedText(encryptedChunks.join('.')); // 使用点号(.)作为分隔符
         const end = performance.now();
+        setEncryptedText(encryptedChunks.join('.')); // Use dot(.) as the separator
         setEncryptionTime(end - start);
     };
 
@@ -44,13 +44,13 @@ function RSA() {
         const decrypt = new JSEncrypt();
         decrypt.setPrivateKey(privateKey);
 
-        const encryptedChunks = encryptedText.split('.'); // 按点号(.)分割加密文本
+        const encryptedChunks = encryptedText.split('.'); // Split the encrypted text
         const decryptedChunks = encryptedChunks.map(chunk => {
-            const decrypted = decrypt.decrypt(atob(chunk)); // 将Base64编码转换回原始文本并解密
+            const decrypted = decrypt.decrypt(atob(chunk)); // Decrypt the Base64 encoded text
             return decrypted;
         });
-        setDecryptedText(decryptedChunks.join(''));
         const end = performance.now();
+        setDecryptedText(decryptedChunks.join(''));
         setDecryptionTime(end - start);
     };
 
@@ -58,10 +58,10 @@ function RSA() {
         const encrypt = new JSEncrypt();
         encrypt.setPublicKey(publicKey);
 
-        // 分割文本，然后使用.map()一次性处理所有块
+        // Split the text into chunks and directly .map() the chunks
         return splitText(text, 100).map(chunk => {
-            return btoa(encrypt.encrypt(chunk)); // 直接返回Base64编码的加密文本
-        }).join('.'); // 使用点号作为分隔符
+            return btoa(encrypt.encrypt(chunk)); // Encrypt the chunk and convert it to Base64
+        }).join('.'); // Join the encrypted chunks with dot(.)
     };
 
 
@@ -70,10 +70,10 @@ function RSA() {
         const decrypt = new JSEncrypt();
         decrypt.setPrivateKey(privateKey);
 
-        // 直接对分割的加密文本进行.map()操作
+        // Split the encrypted text into chunks and directly .map() the chunks
         return encryptedText.split('.').map(chunk => {
-            return decrypt.decrypt(atob(chunk)); // 解密Base64编码的文本
-        }).join(''); // 拼接解密后的文本
+            return decrypt.decrypt(atob(chunk)); // Decrypt the Base64 encoded chunk
+        }).join(''); // Join the decrypted chunks
     };
 
 
