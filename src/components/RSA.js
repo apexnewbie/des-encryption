@@ -1,80 +1,71 @@
-// RSA.js
 import React, { useState } from 'react';
-import { pki } from "node-forge";
+import JSEncrypt from 'jsencrypt';
 import { Input, Button } from 'antd';
 
-const bigInt = require('big-integer');
+const { TextArea } = Input;
 
 function RSA() {
-    const [publicKey, setPublicKey] = useState('');
-    const [privateKey, setPrivateKey] = useState('');
-    const [inputText, setInputText] = useState('');
+    const [plainText, setPlainText] = useState('');
     const [encryptedText, setEncryptedText] = useState('');
     const [decryptedText, setDecryptedText] = useState('');
+    const [publicKey, setPublicKey] = useState('');
+    const [privateKey, setPrivateKey] = useState('');
 
-    function getPemParameters(pem) {
-        let key;
-        const params = {};
-
-        if (pem.includes('PUBLIC KEY')) {
-            key = pki.publicKeyFromPem(pem);
-            params.n = key.n.toString(16);
-            params.e = key.e.toString(16);
-        } else if (pem.includes('PRIVATE KEY')) {
-            key = pki.privateKeyFromPem(pem);
-            params.n = key.n.toString(16);
-            params.e = key.e.toString(16);
-            params.d = key.d.toString(16);
+    const splitText = (text, size) => {
+        const chunks = [];
+        for (let i = 0; i < text.length; i += size) {
+            chunks.push(text.substring(i, i + size));
         }
-
-        return params;
-    }
-
-
-
-
-    function rsaEncrypt(text, e, n) {
-        const encoder = new TextEncoder();
-        const encodedMessage = encoder.encode(text);
-        const hexMessage = Array.from(encodedMessage).map(byte => byte.toString(16).padStart(2, '0')).join('');
-        const m = bigInt(hexMessage, 16);
-        const ciphertext = m.modPow(bigInt(e, 16), bigInt(n, 16));
-        return ciphertext.toString(16);
-    }
-    
-    function rsaDecrypt(ciphertext, d, n) {
-        const m = bigInt(ciphertext, 16);
-        const plaintext = m.modPow(bigInt(d, 16), bigInt(n, 16));
-        const hexPlaintext = plaintext.toString(16).padStart(2, '0');
-        const bytes = new Uint8Array(hexPlaintext.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
-        const decoder = new TextDecoder();
-        return decoder.decode(bytes);
-    }
-
-
-
+        return chunks;
+    };
 
     const handleEncrypt = () => {
-        const { n, e } = getPemParameters(publicKey);
-        const encrypted = rsaEncrypt(inputText, e, n);
-        setEncryptedText(encrypted);
+        const encrypt = new JSEncrypt();
+        encrypt.setPublicKey(publicKey);
+
+        const chunks = splitText(plainText, 100); // 假定每块最大100字符
+        const encryptedChunks = chunks.map(chunk => {
+            const encrypted = encrypt.encrypt(chunk);
+            return btoa(encrypted); // 将加密文本转换为Base64编码
+        });
+        setEncryptedText(encryptedChunks.join('.')); // 使用点号(.)作为分隔符
     };
 
     const handleDecrypt = () => {
-        const { n, d } = getPemParameters(privateKey);
-        const decrypted = rsaDecrypt(encryptedText, d, n);
-        setDecryptedText(decrypted);
+        const decrypt = new JSEncrypt();
+        decrypt.setPrivateKey(privateKey);
+
+        const encryptedChunks = encryptedText.split('.'); // 按点号(.)分割加密文本
+        const decryptedChunks = encryptedChunks.map(chunk => {
+            const decrypted = decrypt.decrypt(atob(chunk)); // 将Base64编码转换回原始文本并解密
+            return decrypted;
+        });
+        setDecryptedText(decryptedChunks.join(''));
     };
 
     return (
         <div>
-            <Input.TextArea rows={4} value={publicKey} onChange={(e) => setPublicKey(e.target.value)} placeholder="Enter Public Key" />
-            <Input.TextArea rows={4} value={privateKey} onChange={(e) => setPrivateKey(e.target.value)} placeholder="Enter Private Key" />
-            <Input value={inputText} onChange={(e) => setInputText(e.target.value)} placeholder="Enter text to encrypt" />
-            <Button onClick={handleEncrypt}>Encrypt</Button>
-            <Input.TextArea rows={4} value={encryptedText} readOnly />
+            <TextArea
+                value={publicKey}
+                onChange={(e) => setPublicKey(e.target.value)}
+                placeholder="Enter public key"
+                rows={4}
+            />
+            <TextArea
+                value={privateKey}
+                onChange={(e) => setPrivateKey(e.target.value)}
+                placeholder="Enter private key"
+                rows={4}
+            />
+            <TextArea
+                value={plainText}
+                onChange={(e) => setPlainText(e.target.value)}
+                placeholder="Enter text to encrypt"
+            />
+            <Button type="primary" onClick={handleEncrypt}>Encrypt</Button>
+            <TextArea value={encryptedText} rows={4} />
             <Button onClick={handleDecrypt}>Decrypt</Button>
-            <Input.TextArea rows={4} value={decryptedText} readOnly />
+            <TextArea value={decryptedText} rows={4} />
         </div>
     );
 }
