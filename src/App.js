@@ -40,7 +40,7 @@ function App() {
 
             <div className='des-encryption-container'>
               {/* <DESEncryption /> */}
-              {/* <RSA /> */}
+              <RSA />
               <DES />
             </div>
           </Content>
