@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import JSEncrypt from 'jsencrypt';
 import { Input, Button, Typography } from 'antd';
 import BatchTest from './BatchTest';
+import '../static/encryption.css'
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -79,32 +80,36 @@ function RSA() {
 
 
     return (
-        <div>
+        <div className='rsa-container'>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Text style={{ margin: '10px 0' }}>Encryption time: {encryptionTime}ms</Text>
-                <Text style={{ margin: '10px 0' }}>Decryption time: {decryptionTime}ms</Text>
+                <Text className="margin-vertical-small">Encryption time: {encryptionTime}ms</Text>
+                <Text className="margin-vertical-small">Decryption time: {decryptionTime}ms</Text>
             </div>
             <TextArea
+                className="textarea-margin"
                 value={publicKey}
                 onChange={(e) => setPublicKey(e.target.value)}
                 placeholder="Enter public key"
-                rows={4}
+                rows={3}
             />
             <TextArea
+                className="textarea-margin"
                 value={privateKey}
                 onChange={(e) => setPrivateKey(e.target.value)}
                 placeholder="Enter private key"
-                rows={4}
+                rows={3}
             />
             <TextArea
+                className="textarea-margin"
                 value={plainText}
                 onChange={(e) => setPlainText(e.target.value)}
-                placeholder="Enter text to encrypt"
+                placeholder="Enter text to encrypt or decrypt"
+                rows={3}
             />
-            <Button type="primary" onClick={handleEncrypt}>Encrypt</Button>
-            <TextArea value={encryptedText} rows={4} />
-            <Button onClick={handleDecrypt}>Decrypt</Button>
-            <TextArea value={decryptedText} rows={4} />
+            <Button className="button-margin" type="primary" onClick={handleEncrypt}>Encrypt</Button>
+            <TextArea className="textarea-margin" value={encryptedText} rows={4} />
+            <Button className="button-margin" onClick={handleDecrypt}>Decrypt</Button>
+            <TextArea className="textarea-margin" value={decryptedText} rows={4} />
             <BatchTest encryptFunction={encryptFunction} decryptFunction={decryptFunction} />
         </div>
     );

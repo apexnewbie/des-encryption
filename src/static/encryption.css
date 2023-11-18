@@ -1,0 +1,22 @@
+
+.rsa-container {
+    padding: 0 50px;
+}
+  
+.des-container {
+    padding: 0 50px;
+}
+
+.margin-vertical-small {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .textarea-margin {
+    margin-bottom: 15px;
+  }
+  
+  .button-margin {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Input, Button, Typography } from 'antd';
 import CryptoJS from 'crypto-js';
 import BatchTest from './BatchTest';
+import '../static/encryption.css'
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -43,26 +44,29 @@ function DES() {
     };
 
     return (
-        <div>
+        <div className='des-container'>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Text style={{ margin: '10px 0' }}>Encryption time: {encryptionTime}ms</Text>
-                <Text style={{ margin: '10px 0' }}>Decryption time: {decryptionTime}ms</Text>
+                <Text className="margin-vertical-small">Encryption time: {encryptionTime}ms</Text>
+                <Text className="margin-vertical-small">Decryption time: {decryptionTime}ms</Text>
             </div>
             <TextArea
+                className="textarea-margin"
                 value={key}
                 onChange={(e) => setKey(e.target.value)}
                 placeholder="Enter secret key"
                 rows={2}
             />
             <TextArea
+                className="textarea-margin"
                 value={plainText}
                 onChange={(e) => setPlainText(e.target.value)}
-                placeholder="Enter text to encrypt"
+                placeholder="Enter text to encrypt or decrypt"
+                rows={3}
             />
-            <Button type="primary" onClick={handleEncrypt}>Encrypt</Button>
-            <TextArea value={encryptedText} rows={4} />
-            <Button onClick={handleDecrypt}>Decrypt</Button>
-            <TextArea value={decryptedText} rows={4} />
+            <Button className="button-margin" type="primary" onClick={handleEncrypt}>Encrypt</Button>
+            <TextArea className="textarea-margin" value={encryptedText} rows={4} />
+            <Button className="button-margin" onClick={handleDecrypt}>Decrypt</Button>
+            <TextArea className="textarea-margin" value={decryptedText} rows={4} />
             <BatchTest encryptFunction={encryptFunction} decryptFunction={decryptFunction} />
         </div>
     );

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Table, InputNumber, Row, Col } from 'antd';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import '../static/batch.css'
 
 function BatchTest({ encryptFunction, decryptFunction }) {
     const [testResults, setTestResults] = useState([]);
@@ -63,7 +64,7 @@ function BatchTest({ encryptFunction, decryptFunction }) {
 
     return (
         <div>
-            <Row gutter={16}>
+            <Row gutter={16} className="row-item-margin">
                 <Col>
                     <InputNumber min={1} max={10000} defaultValue={100} onChange={setMinLength} />
                 </Col>
@@ -77,23 +78,26 @@ function BatchTest({ encryptFunction, decryptFunction }) {
                     <Button type="primary" onClick={() => runTests(minLength, maxLength, step)}>Run Tests</Button>
                 </Col>
             </Row>
-            <Table dataSource={testResults} columns={columns} />
-            <LineChart
-                width={600}
-                height={300}
-                data={testResults}
-                margin={{
-                    top: 5, right: 30, left: 20, bottom: 5,
-                }}
-            >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="messageLength" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="encryptionTime" stroke="#8884d8" activeDot={{ r: 8 }} />
-                <Line type="monotone" dataKey="decryptionTime" stroke="#82ca9d" />
-            </LineChart>
+            <Table dataSource={testResults} columns={columns} className="table-chart-margin" />
+            <div className="plot-margin">
+                <LineChart
+                    width={600}
+                    height={300}
+                    data={testResults}
+                    margin={{
+                        top: 5, right: 30, left: 20, bottom: 5,
+                    }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="messageLength" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="encryptionTime" stroke="#8884d8" activeDot={{ r: 8 }} />
+                    <Line type="monotone" dataKey="decryptionTime" stroke="#82ca9d" />
+                </LineChart>
+            </div>
+
         </div>
     );
 }

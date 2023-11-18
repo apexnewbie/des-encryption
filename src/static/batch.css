@@ -1,0 +1,18 @@
+.row-item-margin {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+.table-chart-margin {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.plot-margin {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+  
