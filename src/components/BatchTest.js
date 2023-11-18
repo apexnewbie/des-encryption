@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Table, InputNumber, Row, Col } from 'antd';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 function BatchTest({ encryptFunction, decryptFunction }) {
     const [testResults, setTestResults] = useState([]);
@@ -77,6 +78,22 @@ function BatchTest({ encryptFunction, decryptFunction }) {
                 </Col>
             </Row>
             <Table dataSource={testResults} columns={columns} />
+            <LineChart
+                width={600}
+                height={300}
+                data={testResults}
+                margin={{
+                    top: 5, right: 30, left: 20, bottom: 5,
+                }}
+            >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="messageLength" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="encryptionTime" stroke="#8884d8" activeDot={{ r: 8 }} />
+                <Line type="monotone" dataKey="decryptionTime" stroke="#82ca9d" />
+            </LineChart>
         </div>
     );
 }
