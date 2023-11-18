@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { Button, Table } from 'antd';
+import { Button, Table, InputNumber, Row, Col } from 'antd';
 
-function BatchTest({ key, encryptFunction, decryptFunction }) {
+function BatchTest({ encryptFunction, decryptFunction }) {
     const [testResults, setTestResults] = useState([]);
+    const [minLength, setMinLength] = useState(100);
+    const [maxLength, setMaxLength] = useState(10000);
+    const [step, setStep] = useState(1000);
 
     // Generate test data
     const generateTestData = (minLength, maxLength, step) => {
@@ -14,20 +17,21 @@ function BatchTest({ key, encryptFunction, decryptFunction }) {
     };
 
     // Run the tests
-    const runTests = () => {
-        const testData = generateTestData(100, 10000, 1000); // Generate test data
+    const runTests = (minLength, maxLength, step) => {
+        const testData = generateTestData(minLength, maxLength, step); // Generate test data
         let results = [];
 
         testData.forEach(text => {
             const startEncrypt = performance.now();
-            const encrypted = encryptFunction(text, key);
+            const encrypted = encryptFunction(text);
             const endEncrypt = performance.now();
 
             const startDecrypt = performance.now();
-            const decrypted = decryptFunction(encrypted, key);
+            const decrypted = decryptFunction(encrypted);
             const endDecrypt = performance.now();
 
             results.push({
+                key: text.length, // Use messageLength as the unique key
                 messageLength: text.length,
                 encryptionTime: endEncrypt - startEncrypt,
                 decryptionTime: endDecrypt - startDecrypt
@@ -58,7 +62,20 @@ function BatchTest({ key, encryptFunction, decryptFunction }) {
 
     return (
         <div>
-            <Button type="primary" onClick={runTests}>Run Tests</Button>
+            <Row gutter={16}>
+                <Col>
+                    <InputNumber min={1} max={10000} defaultValue={100} onChange={setMinLength} />
+                </Col>
+                <Col>
+                    <InputNumber min={1} max={10000} defaultValue={10000} onChange={setMaxLength} />
+                </Col>
+                <Col>
+                    <InputNumber min={1} max={1000} defaultValue={1000} onChange={setStep} />
+                </Col>
+                <Col>
+                    <Button type="primary" onClick={() => runTests(minLength, maxLength, step)}>Run Tests</Button>
+                </Col>
+            </Row>
             <Table dataSource={testResults} columns={columns} />
         </div>
     );
