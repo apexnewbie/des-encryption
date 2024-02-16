@@ -39,9 +39,9 @@ function App() {
             </div>
 
             <div className='des-encryption-container'>
-              {/* <DESEncryption /> */}
-              <RSA />
-              <DES />
+              <DESEncryption />
+              {/* <RSA /> */}
+              {/* <DES /> */}
             </div>
           </Content>
         </div>
