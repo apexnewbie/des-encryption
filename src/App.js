@@ -42,6 +42,7 @@ function App() {
               <DESEncryption />
               {/* <RSA /> */}
               {/* <DES /> */}
+              {/* Main Page */}
             </div>
           </Content>
         </div>
